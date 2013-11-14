@@ -75,3 +75,7 @@ obj-$(CONFIG_QPNP_MISC) += qpnp-misc.o
 obj-$(CONFIG_EARJACK_DEBUGGER) += earjack_debugger.o
 obj-$(CONFIG_FAN48632_BOOST) += fan48632_boost.o
 obj-y += mako_hotplug_control.o
+<<<<<<< HEAD
+=======
+obj-y += sound_control.o
+>>>>>>> ffd9113... drivers: misc: removed this by mistake on a previous commit.
