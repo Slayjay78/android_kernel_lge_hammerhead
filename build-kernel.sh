@@ -19,8 +19,19 @@ export USE_CCACHE=1
 
 # Target gcc version
 export TARGET_GCC=4.8;
-export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
+if [ $TARGET_GCC == "4.8" ];
+then
+    if [ -z "$TARGET_GCC_VENDOR" ];
+    then
+        export TARGET_GCC_SUB=google;
+    fi;
+    export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
+else  
+    export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
+fi;
 export PATH=$PATH:$ARM_EABI_TOOLCHAIN/bin:$ARM_EABI_TOOLCHAIN/arm-eabi/bin;
+
+ echo 'Kernel buid with ' $ARM_EABI_TOOLCHAIN;
 
 # Build ID
 export LOCALVERSION="-PSK-KK"
@@ -43,11 +54,11 @@ time make -j16;
 
 if [ -e ./arch/arm/boot/zImage-dtb ] ;
 then
-cp ./arch/arm/boot/zImage-dtb -f ../../../device/lge/hammerhead-kernel/zImage-dtb;
+ cp ./arch/arm/boot/zImage-dtb -f ../../../device/lge/hammerhead-kernel/zImage-dtb;
  echo "Kernel build finished, Continuing with ROM build";
  echo "";
 else
-echo "":
+    echo "";
     echo "error detected in kernel build, now exiting";
     exit 1;
 fi;
