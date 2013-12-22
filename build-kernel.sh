@@ -63,10 +63,13 @@ export CROSS_COMPILE=$ARM_EABI_TOOLCHAIN/bin/arm-eabi-;
 echo "";
 echo "Starting the kernel build";
 echo "";
-#cd $KERNELSRC
-rm ./arch/arm/boot/zImage;
+if [ -e ./arch/arm/boot/zImage-dtb ] ;
+then
+    rm ./arch/arm/boot/zImage-dtb;
+fi;
+
 make hammerhead_defconfig;
-time make -j16;
+time make -j8;
 
 if [ -e ./arch/arm/boot/zImage-dtb ] ;
 then
