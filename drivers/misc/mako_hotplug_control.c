@@ -34,12 +34,14 @@ static ssize_t first_level_store(struct device *dev, struct device_attribute *at
     return size;
 }
 
+/*
 static ssize_t suspend_frequency_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
     return sprintf(buf, "%u\n", get_suspend_frequency());
 }
+*/
 
-static ssize_t suspend_frequency_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
+/*static ssize_t suspend_frequency_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
 {
     unsigned int new_val;
     
@@ -52,6 +54,7 @@ static ssize_t suspend_frequency_store(struct device *dev, struct device_attribu
     
     return size;
 }
+*/
 
 static ssize_t cores_on_touch_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
