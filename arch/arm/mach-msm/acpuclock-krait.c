@@ -1274,8 +1274,11 @@ int __init acpuclk_krait_init(struct device *dev,
 	dcvs_freq_init();
 	acpuclk_register(&acpuclk_krait_data);
 	register_hotcpu_notifier(&acpuclk_cpu_notifier);
-
+#ifdef CONFIG_DEBUG_FS
 	acpuclk_krait_debug_init(&drv);
-
+#else
+	acpuclk_krait_debug_init();
+#endif
 	return 0;
+
 }
