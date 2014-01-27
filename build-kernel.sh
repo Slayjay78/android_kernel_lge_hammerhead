@@ -69,7 +69,7 @@ then
 fi;
 
 make hammerhead_defconfig;
-time make -j8;
+time make CONFIG_DEBUG_SECTION_MISMATCH=y -j8;
 
 if [ -e ./arch/arm/boot/zImage-dtb ] ;
 then
