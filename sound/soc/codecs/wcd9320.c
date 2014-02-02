@@ -6422,7 +6422,7 @@ static int taiko_codec_probe(struct snd_soc_codec *codec)
 	/* codec resmgr module init */
 	wcd9xxx = codec->control_data;
 	pdata = dev_get_platdata(codec->dev->parent);
-	ret = wcd9xxx_resmgr_init(&taiko->resmgr, codec, wcd9xxx, pdata,
+	ret = wcd9xxx_resmgr_init(&taiko->resmgr, codec, core_res, pdata,
 				  &taiko_reg_address);
 	if (ret) {
 		pr_err("%s: wcd9xxx init failed %d\n", __func__, ret);
