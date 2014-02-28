@@ -63,31 +63,32 @@ static struct completion freq_mitigation_complete;
 static int enabled = 1;
 static bool is_throttling = false;
 static unsigned int user_max_freq = 2265600;
-static int rails_cnt;
-static int psm_rails_cnt;
-static int ocr_rail_cnt;
+//static int rails_cnt;
+//static int psm_rails_cnt;
+//static int ocr_rail_cnt;
 static int limit_idx;
 static int limit_idx_low;
 static int limit_idx_high;
 static int max_tsens_num;
 static struct cpufreq_frequency_table *table;
-static uint32_t usefreq;
-static int freq_table_get;
-static bool vdd_rstr_enabled;
+//static uint32_t usefreq;
+//static int freq_table_get;
+/*static bool vdd_rstr_enabled;
 static bool vdd_rstr_nodes_called;
 static bool vdd_rstr_probed;
 static bool psm_enabled;
 static bool psm_nodes_called;
 static bool psm_probed;
+*/
 static bool hotplug_enabled;
 static bool freq_mitigation_enabled;
-static bool ocr_enabled;
-static bool ocr_nodes_called;
-static bool ocr_probed;
+//static bool ocr_enabled;
+//static bool ocr_nodes_called;
+//static bool ocr_probed;
 static int *tsens_id_map;
-static DEFINE_MUTEX(vdd_rstr_mutex);
-static DEFINE_MUTEX(psm_mutex);
-static DEFINE_MUTEX(ocr_mutex);
+//static DEFINE_MUTEX(vdd_rstr_mutex);
+//static DEFINE_MUTEX(psm_mutex);
+//static DEFINE_MUTEX(ocr_mutex);
 static uint32_t min_freq_limit;
 
 enum thermal_threshold {
@@ -137,9 +138,9 @@ struct psm_rail {
 	struct attribute_group attr_gp;
 };
 
-static struct psm_rail *psm_rails;
-static struct psm_rail *ocr_rails;
-static struct rail *rails;
+//static struct psm_rail *psm_rails;
+//static struct psm_rail *ocr_rails;
+//static struct rail *rails;
 static struct cpu_info cpus[NR_CPUS];
 
 struct vdd_rstr_enable {
@@ -236,6 +237,7 @@ static struct notifier_block msm_thermal_cpufreq_notifier = {
 };
 
 /* If freq table exists, then we can send freq request */
+/*
 static int check_freq_table(void)
 {
 	int ret = 0;
@@ -250,6 +252,7 @@ static int check_freq_table(void)
 
 	return ret;
 }
+*/
 
 static void update_cpu_freq(int cpu)
 {
@@ -259,6 +262,7 @@ static void update_cpu_freq(int cpu)
 	}
 }
 
+/*
 static int update_cpu_min_freq_all(uint32_t min)
 {
 	uint32_t cpu = 0;
@@ -271,7 +275,7 @@ static int update_cpu_min_freq_all(uint32_t min)
 			return ret;
 		}
 	}
-	/* If min is larger than allowed max */
+	* If min is larger than allowed max *
 	min = min(min, table[limit_idx_high].frequency);
 
 	if (freq_mitigation_task) {
@@ -288,7 +292,9 @@ static int update_cpu_min_freq_all(uint32_t min)
 
 	return ret;
 }
+*/
 
+/*
 static int vdd_restriction_apply_freq(struct rail *r, int level)
 {
 	int ret = 0;
@@ -296,7 +302,7 @@ static int vdd_restriction_apply_freq(struct rail *r, int level)
 	if (level == r->curr_level)
 		return ret;
 
-	/* level = -1: disable, level = 0,1,2..n: enable */
+	* level = -1: disable, level = 0,1,2..n: enable *
 	if (level == -1) {
 		ret = update_cpu_min_freq_all(r->min_level);
 		if (ret)
@@ -329,7 +335,7 @@ static int vdd_restriction_apply_voltage(struct rail *r, int level)
 	if (level == r->curr_level)
 		return ret;
 
-	/* level = -1: disable, level = 0,1,2..n: enable */
+	* level = -1: disable, level = 0,1,2..n: enable *
 	if (level == -1) {
 		ret = regulator_set_voltage(r->reg, r->min_level,
 			r->levels[r->num_levels - 1]);
@@ -347,8 +353,10 @@ static int vdd_restriction_apply_voltage(struct rail *r, int level)
 
 	return ret;
 }
+*/
 
 /* Setting all rails the same mode */
+/* currently unused
 static int psm_set_mode_all(int mode)
 {
 	int i = 0;
@@ -369,7 +377,9 @@ static int psm_set_mode_all(int mode)
 
 	return fail_cnt ? (-EFAULT) : ret;
 }
+*/
 
+/*
 static int vdd_rstr_en_show(
 	struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
@@ -377,7 +387,9 @@ static int vdd_rstr_en_show(
 
 	return snprintf(buf, PAGE_SIZE, "%d\n", en->enabled);
 }
+*/
 
+/*
 static ssize_t vdd_rstr_en_store(struct kobject *kobj,
 	struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -408,10 +420,10 @@ static ssize_t vdd_rstr_en_store(struct kobject *kobj,
 			ret = vdd_restriction_apply_voltage(&rails[i],
 			(val) ? 0 : -1);
 
-		/*
+		*
 		 * Even if fail to set one rail, still try to set the
 		 * others. Continue the loop
-		 */
+		 *
 		if (ret)
 			pr_err("Set vdd restriction for %s failed\n",
 					rails[i].name);
@@ -422,7 +434,7 @@ static ssize_t vdd_rstr_en_store(struct kobject *kobj,
 				dis_cnt++;
 		}
 	}
-	/* As long as one rail is enabled, vdd rstr is enabled */
+	* As long as one rail is enabled, vdd rstr is enabled *
 	if (val && en_cnt)
 		en->enabled = 1;
 	else if (!val && (dis_cnt == rails_cnt))
@@ -432,7 +444,9 @@ done_vdd_rstr_en:
 	mutex_unlock(&vdd_rstr_mutex);
 	return count;
 }
+*/
 
+/*
 static struct vdd_rstr_enable vdd_rstr_en = {
 	.ko_attr.attr.name = __stringify(enabled),
 	.ko_attr.attr.mode = 644,
@@ -440,22 +454,28 @@ static struct vdd_rstr_enable vdd_rstr_en = {
 	.ko_attr.store = vdd_rstr_en_store,
 	.enabled = 1,
 };
+*/
 
+/*
 static struct attribute *vdd_rstr_en_attribs[] = {
 	&vdd_rstr_en.ko_attr.attr,
 	NULL,
 };
+*/
 
+/*
 static struct attribute_group vdd_rstr_en_attribs_gp = {
 	.attrs  = vdd_rstr_en_attribs,
 };
+*/
 
+/*
 static int vdd_rstr_reg_value_show(
 	struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
 	int val = 0;
 	struct rail *reg = VDD_RSTR_REG_VALUE_FROM_ATTRIBS(attr);
-	/* -1:disabled, -2:fail to get regualtor handle */
+	* -1:disabled, -2:fail to get regualtor handle *
 	if (reg->curr_level < 0)
 		val = reg->curr_level;
 	else
@@ -463,14 +483,18 @@ static int vdd_rstr_reg_value_show(
 
 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
 }
+*/
 
+/*
 static int vdd_rstr_reg_level_show(
 	struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
 	struct rail *reg = VDD_RSTR_REG_LEVEL_FROM_ATTRIBS(attr);
 	return snprintf(buf, PAGE_SIZE, "%d\n", reg->curr_level);
 }
+*/
 
+/*
 static ssize_t vdd_rstr_reg_level_store(struct kobject *kobj,
 	struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -513,7 +537,9 @@ done_store_level:
 	mutex_unlock(&vdd_rstr_mutex);
 	return count;
 }
+*/
 
+/*
 static int request_optimum_current(struct psm_rail *rail, enum ocr_request req)
 {
 	int ret = 0;
@@ -531,14 +557,16 @@ static int request_optimum_current(struct psm_rail *rail, enum ocr_request req)
 		pr_err("%s: Optimum current request failed\n", KBUILD_MODNAME);
 		goto request_ocr_exit;
 	}
-	ret = 0; /*regulator_set_optimum_mode returns the mode on success*/
+	ret = 0; *regulator_set_optimum_mode returns the mode on success*
 	pr_debug("%s: Requested optimum current mode: %d\n",
 		KBUILD_MODNAME, req);
 
 request_ocr_exit:
 	return ret;
 }
+*/
 
+/*
 static int ocr_set_mode_all(enum ocr_request req)
 {
 	int ret = 0, i;
@@ -555,14 +583,18 @@ static int ocr_set_mode_all(enum ocr_request req)
 ocr_set_mode_exit:
 	return ret;
 }
+*/
 
+/*
 static int ocr_reg_mode_show(struct kobject *kobj,
 	struct kobj_attribute *attr, char *buf)
 {
 	struct psm_rail *reg = PSM_REG_MODE_FROM_ATTRIBS(attr);
 	return snprintf(buf, PAGE_SIZE, "%d\n", reg->mode);
 }
+*/
 
+/*
 static ssize_t ocr_reg_mode_store(struct kobject *kobj,
 	struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -599,14 +631,18 @@ done_ocr_store:
 	mutex_unlock(&ocr_mutex);
 	return count;
 }
+*/
 
+/*
 static int psm_reg_mode_show(
 	struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
 	struct psm_rail *reg = PSM_REG_MODE_FROM_ATTRIBS(attr);
 	return snprintf(buf, PAGE_SIZE, "%d\n", reg->mode);
 }
+*/
 
+/*
 static ssize_t psm_reg_mode_store(struct kobject *kobj,
 	struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -641,6 +677,7 @@ done_psm_store:
 	mutex_unlock(&psm_mutex);
 	return count;
 }
+*/
 
 static int check_sensor_id(int sensor_id)
 {
@@ -698,6 +735,7 @@ fail:
 }
 
 /* 1:enable, 0:disable */
+/* currently unused
 static int vdd_restriction_apply_all(int en)
 {
 	int i = 0;
@@ -724,20 +762,21 @@ static int vdd_restriction_apply_all(int en)
 		}
 	}
 
-	/* As long as one rail is enabled, vdd rstr is enabled */
+	* As long as one rail is enabled, vdd rstr is enabled *
 	if (en && en_cnt)
 		vdd_rstr_en.enabled = 1;
 	else if (!en && (dis_cnt == rails_cnt))
 		vdd_rstr_en.enabled = 0;
 
-	/*
+	*
 	 * Check fail_cnt again to make sure all of the rails are applied
 	 * restriction successfully or not
-	 */
+	 *
 	if (fail_cnt)
 		return -EFAULT;
 	return ret;
 }
+*/
 
 static int msm_thermal_get_freq_table(void)
 {
@@ -832,6 +871,7 @@ set_threshold_exit:
 }
 
 #ifdef CONFIG_SMP
+/* Currently unused
 static void __ref do_core_control(long temp)
 {
 	int i = 0;
@@ -866,10 +906,10 @@ static void __ref do_core_control(long temp)
 			cpus_offlined &= ~BIT(i);
 			pr_info("%s: Allow Online CPU%d Temp: %ld\n",
 					KBUILD_MODNAME, i, temp);
-			/*
+			*
 			 * If this core is already online, then bring up the
 			 * next offlined core.
-			 */
+			 *
 			if (cpu_online(i))
 				continue;
 			ret = cpu_up(i);
@@ -881,6 +921,8 @@ static void __ref do_core_control(long temp)
 	}
 	mutex_unlock(&core_control_mutex);
 }
+*/
+
 /* Call with core_control_mutex locked */
 static int __ref update_offline_cores(int val)
 {
@@ -950,6 +992,7 @@ static __ref int do_hotplug(void *data)
 }
 #endif
 
+/*Currently unused
 static int do_ocr(void)
 {
 	struct tsens_device tsens_dev;
@@ -987,11 +1030,11 @@ static int do_ocr(void)
 
 	if (auto_cnt == max_tsens_num ||
 		ocr_rails[0].init != OPTIMUM_CURRENT_NR) {
-		/* 'init' not equal to OPTIMUM_CURRENT_NR means this is the
+		* 'init' not equal to OPTIMUM_CURRENT_NR means this is the
 		** first polling iteration after device probe. During first
 		** iteration, if temperature is less than the set point, clear
 		** the max current request made and reset the 'init'.
-		*/
+		*
 		if (ocr_rails[0].init != OPTIMUM_CURRENT_NR)
 			for (j = 0; j < ocr_rail_cnt; j++)
 				ocr_rails[j].init = OPTIMUM_CURRENT_NR;
@@ -1006,7 +1049,9 @@ do_ocr_exit:
 	mutex_unlock(&ocr_mutex);
 	return ret;
 }
+*/
 
+/* currently unused
 static int do_vdd_restriction(void)
 {
 	struct tsens_device tsens_dev;
@@ -1075,11 +1120,11 @@ static int do_psm(void)
 			continue;
 		}
 
-		/*
+		*
 		 * As long as one sensor is above the threshold, set PWM mode
 		 * on all rails, and loop stops. Set auto mode when all rails
 		 * are below thershold
-		 */
+		 *
 		if (temp >  msm_thermal_info.psm_temp_degC) {
 			ret = psm_set_mode_all(PMIC_PWM_MODE);
 			if (ret) {
@@ -1103,6 +1148,7 @@ exit:
 	mutex_unlock(&psm_mutex);
 	return ret;
 }
+*/
 
 static void __ref do_freq_control(long temp)
 {
@@ -1569,12 +1615,15 @@ static struct kernel_param_ops module_ops = {
 module_param_cb(enabled, &module_ops, &enabled, 0644);
 MODULE_PARM_DESC(enabled, "enforce thermal limit on cpu");
 
+/*
 static ssize_t show_cc_enabled(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "%d\n", core_control_enabled);
 }
+*/
 
+/*
 static ssize_t __ref store_cc_enabled(struct kobject *kobj,
 		struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -1607,13 +1656,17 @@ static ssize_t __ref store_cc_enabled(struct kobject *kobj,
 done_store_cc:
 	return count;
 }
+*/
 
+/*
 static ssize_t show_cpus_offlined(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "%d\n", cpus_offlined);
 }
+*/
 
+/*
 static ssize_t __ref store_cpus_offlined(struct kobject *kobj,
 		struct kobj_attribute *attr, const char *buf, size_t count)
 {
@@ -1648,22 +1701,31 @@ done_cc:
 	mutex_unlock(&core_control_mutex);
 	return count;
 }
+*/
 
+/*
 static __refdata struct kobj_attribute cc_enabled_attr =
 __ATTR(enabled, 0644, show_cc_enabled, store_cc_enabled);
+*/
 
+/*
 static __refdata struct kobj_attribute cpus_offlined_attr =
 __ATTR(cpus_offlined, 0644, show_cpus_offlined, store_cpus_offlined);
+*/
 
+/*
 static __refdata struct attribute *cc_attrs[] = {
 	&cc_enabled_attr.attr,
 	&cpus_offlined_attr.attr,
 	NULL,
 };
+*/
 
+/*
 static __refdata struct attribute_group cc_attr_group = {
 	.attrs = cc_attrs,
 };
+*/
 
 static ssize_t show_wakeup_ms(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
@@ -1711,6 +1773,7 @@ static __refdata struct attribute_group tt_attr_group = {
 	.attrs = tt_attrs,
 };
 
+/*
 static __init int msm_thermal_add_cc_nodes(void)
 {
 	struct kobject *module_kobj = NULL;
@@ -1745,6 +1808,7 @@ done_cc_nodes:
 		kobject_del(cc_kobj);
 	return ret;
 }
+*/
 
 static __init int msm_thermal_add_timer_nodes(void)
 {
@@ -1819,14 +1883,15 @@ int __devinit msm_thermal_init(struct msm_thermal_data *pdata)
 	return ret;
 }
 
+/*
 static int ocr_reg_init(struct platform_device *pdev)
 {
 	int ret = 0;
 	int i, j;
 
 	for (i = 0; i < ocr_rail_cnt; i++) {
-		/* Check if vdd_restriction has already initialized any
-		 * regualtor handle. If so use the same handle.*/
+		* Check if vdd_restriction has already initialized any
+		 * regualtor handle. If so use the same handle.*
 		for (j = 0; j < rails_cnt; j++) {
 			if (!strcmp(ocr_rails[i].name, rails[j].name)) {
 				if (rails[j].reg == NULL)
@@ -1864,10 +1929,10 @@ static int vdd_restriction_reg_init(struct platform_device *pdev)
 		if (rails[i].freq_req == 1) {
 			usefreq |= BIT(i);
 			check_freq_table();
-			/*
+			*
 			 * Restrict frequency by default until we have made
 			 * our first temp reading
-			 */
+			 *
 			if (freq_table_get)
 				ret = vdd_restriction_apply_freq(&rails[i], 0);
 			else
@@ -1888,17 +1953,19 @@ static int vdd_restriction_reg_init(struct platform_device *pdev)
 				}
 				return ret;
 			}
-			/*
+			*
 			 * Restrict votlage by default until we have made
 			 * our first temp reading
-			 */
+			 *
 			ret = vdd_restriction_apply_voltage(&rails[i], 0);
 		}
 	}
 
 	return ret;
 }
+*/
 
+/*
 static int psm_reg_init(struct platform_device *pdev)
 {
 	int ret = 0;
@@ -1918,7 +1985,7 @@ static int psm_reg_init(struct platform_device *pdev)
 			}
 			return ret;
 		}
-		/* Apps default vote for PWM mode */
+		* Apps default vote for PWM mode *
 		psm_rails[i].init = PMIC_PWM_MODE;
 		ret = rpm_regulator_set_mode(psm_rails[i].reg,
 				psm_rails[i].init);
@@ -1941,7 +2008,9 @@ psm_reg_exit:
 
 	return ret;
 }
+*/
 
+/*
 static int msm_thermal_add_vdd_rstr_nodes(void)
 {
 	struct kobject *module_kobj = NULL;
@@ -2023,7 +2092,9 @@ thermal_sysfs_add_exit:
 	}
 	return rc;
 }
+*/
 
+/*
 static int msm_thermal_add_ocr_nodes(void)
 {
 	struct kobject *module_kobj = NULL;
@@ -2097,7 +2168,9 @@ ocr_node_exit:
 	}
 	return rc;
 }
+*/
 
+/*
 static int msm_thermal_add_psm_nodes(void)
 {
 	struct kobject *module_kobj = NULL;
@@ -2169,7 +2242,9 @@ psm_node_exit:
 	}
 	return rc;
 }
+*/
 
+/*
 static int probe_vdd_rstr(struct device_node *node,
 		struct msm_thermal_data *data, struct platform_device *pdev)
 {
@@ -2269,7 +2344,9 @@ read_node_fail:
 		vdd_rstr_probed = false;
 	return ret;
 }
+*/
 
+/*
 static int probe_ocr(struct device_node *node, struct msm_thermal_data *data,
 		struct platform_device *pdev)
 {
@@ -2322,11 +2399,11 @@ static int probe_ocr(struct device_node *node, struct msm_thermal_data *data,
 		}
 		ocr_enabled = true;
 		ocr_nodes_called = false;
-		/*
+		*
 		 * Vote for max optimum current by default until we have made
 		 * our first temp reading
-		 */
-		if (ocr_set_mode_all(OPTIMUM_CURRENT_MAX))
+		 *
+		 if (ocr_set_mode_all(OPTIMUM_CURRENT_MAX))
 			pr_err("Set max optimum current failed\n");
 	}
 
@@ -2346,7 +2423,9 @@ read_ocr_fail:
 read_ocr_exit:
 	return ret;
 }
+*/
 
+/*
 static int probe_psm(struct device_node *node, struct msm_thermal_data *data,
 		struct platform_device *pdev)
 {
@@ -2406,7 +2485,9 @@ read_node_fail:
 		psm_probed = false;
 	return ret;
 }
+*/
 
+/*
 static int probe_cc(struct device_node *node, struct msm_thermal_data *data,
 		struct platform_device *pdev)
 {
@@ -2485,6 +2566,7 @@ hotplug_node_fail:
 
 	return ret;
 }
+*/
 
 static int probe_freq_mitigation(struct device_node *node,
 		struct msm_thermal_data *data,
