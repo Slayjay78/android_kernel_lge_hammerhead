@@ -233,11 +233,15 @@ static void ftrace_sync(struct work_struct *work)
 	 */
 }
 
+/* Currently unused and this will bring us errors with -Wunused-function
+so we comment it simply out
+
 static void ftrace_sync_ipi(void *data)
 {
-	/* Probably not needed, but do it anyway */
 	smp_rmb();
 }
+*/
+
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 static void update_function_graph_func(void);
