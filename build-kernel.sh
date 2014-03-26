@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (C) 2013 MartinRo
 # credits to sparksco for the SaberMod kernel buildscript as base
-# Build Script. Use bash to run this script, bash mako-kernel from source directory
+# Build Script. Use bash to run this script
 export MANUFACTURER=lge;
 export DEVICE=hammerhead;
 
@@ -50,7 +50,7 @@ export PATH=$PATH:$ARM_EABI_TOOLCHAIN/bin:$ARM_EABI_TOOLCHAIN/arm-eabi/bin;
  echo 'Kernel buid with ' $ARM_EABI_TOOLCHAIN;
 
 # Build ID
-export LOCALVERSION="-PSK-KK"
+export LOCALVERSION="-PSK"
 export KBUILD_BUILD_USER=PSX
 export KBUILD_BUILD_HOST="PURE-SPEED-KERNEL"
 
