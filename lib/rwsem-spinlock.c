@@ -78,7 +78,7 @@ __rwsem_do_wake(struct rw_semaphore *sem, int wakewrite)
 		goto out;
 	}
 
-	/* grant read locks to all queued readers. */
+	/* grant an infinite number of read locks to the front of the queue */
 	woken = 0;
 	do {
 		struct list_head *next = waiter->list.next;
