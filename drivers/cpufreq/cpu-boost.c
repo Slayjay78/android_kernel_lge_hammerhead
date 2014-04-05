@@ -44,7 +44,7 @@ static struct workqueue_struct *cpu_boost_wq;
 
 static struct work_struct input_boost_work;
 
-static unsigned int boost_ms = 40;
+static unsigned int boost_ms = 100;
 module_param(boost_ms, uint, 0644);
 
 static unsigned int sync_threshold = 1728000;
@@ -59,7 +59,7 @@ module_param(input_boost_ms, uint, 0644);
 static unsigned int migration_load_threshold = 15;
 module_param(migration_load_threshold, uint, 0644);
 
-static bool load_based_syncs;
+static bool load_based_syncs = 1;
 module_param(load_based_syncs, bool, 0644);
 
 static u64 last_input_time;
