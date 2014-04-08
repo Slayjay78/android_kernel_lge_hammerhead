@@ -18,7 +18,8 @@ export USE_CCACHE=1
 #export KERNELSRC=$DIRSRC;
 
 # Target gcc version
-export TARGET_GCC=4.8;
+#export TARGET_GCC=4.8;
+export TARGET_GCC=4.9;
 
 #the following lines one have some effect if you use 4.8 as TARGET_GCC
 #if you want to use cfx, uncomment next line
@@ -31,7 +32,10 @@ export TARGET_GCC=4.8;
 #export TARGET_GCC_SUB=sm_old;
 
 #if you want to use the most current sabermod toolchain from sourceforge, uncomment the next line
-export TARGET_GCC_SUB=sm_new;
+#export TARGET_GCC_SUB=sm_new;
+
+#if you want to use the most current sabermod toolchain from sourceforge, uncomment the next line
+export TARGET_GCC_SUB=UBER;
 
 
 
@@ -43,7 +47,16 @@ then
     fi;
     export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
 else  
-    export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
+	if [ $TARGET_GCC == "4.9" ];
+	then
+		if [ -z "$TARGET_GCC_SUB" ];
+		then
+			export TARGET_GCC_SUB=google;
+		fi;
+		export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
+	else  
+		export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
+	fi;
 fi;
 export PATH=$PATH:$ARM_EABI_TOOLCHAIN/bin:$ARM_EABI_TOOLCHAIN/arm-eabi/bin;
 
