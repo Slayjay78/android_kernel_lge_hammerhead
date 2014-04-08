@@ -58,7 +58,7 @@ else
 		export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
 	fi;
 fi;
-export PATH=$PATH:$ARM_EABI_TOOLCHAIN/bin:$ARM_EABI_TOOLCHAIN/arm-eabi/bin;
+#export PATH=$ARM_EABI_TOOLCHAIN/arm-eabi/bin:$ARM_EABI_TOOLCHAIN/bin:$PATH;
 
  echo 'Kernel buid with ' $ARM_EABI_TOOLCHAIN;
 
@@ -82,7 +82,7 @@ then
 fi;
 
 make hammerhead_defconfig;
-time make CONFIG_DEBUG_SECTION_MISMATCH=y -j8;
+time make -j8;
 
 if [ -e ./arch/arm/boot/zImage-dtb ] ;
 then
