@@ -90,6 +90,7 @@ static struct cpu_stats {
 };
 
 extern unsigned int report_load_at_max_freq(void);
+extern unsigned int report_avg_load_cpu(unsigned int cpu);
 
 static struct cpu_stats *get_load_stats(void)
 {
@@ -121,10 +122,10 @@ struct load_thresh_tbl {
 	unsigned int down_threshold;
 };
 
-#define LOAD_SCALE(u, d)             \
-{                          	     \
-		.up_threshold = u,   \
-		.down_threshold = d, \
+#define LOAD_SCALE(u, d)     \
+{                            \
+	.up_threshold = u,   \
+	.down_threshold = d, \
 }
 
 static struct load_thresh_tbl load[] = {
@@ -149,25 +150,25 @@ static void handle_lock_timer(unsigned long data)
 }
 EXPORT_SYMBOL_GPL(handle_lock_timer);
 
-static int get_slowest_cpu(void)
+static int get_lowest_load_cpu(void)
 {
-	int cpu, slowest_cpu = 0;
-	unsigned int lowest_rate = UINT_MAX;
-	unsigned int rate[NR_CPUS];
+	int cpu, lowest_cpu = 0;
+	unsigned int lowest_load = UINT_MAX;
+	unsigned int load[NR_CPUS];
 
 	for_each_online_cpu(cpu) {
 		if (cpu == 0)
 			continue;
-		rate[cpu] = acpuclk_get_rate(cpu);
-		if (rate[cpu] < lowest_rate) {
-			lowest_rate = rate[cpu];
-			slowest_cpu = cpu;
+		load[cpu] = report_avg_load_cpu(cpu);
+		if (load[cpu] < lowest_load) {
+			lowest_load = load[cpu];
+			lowest_cpu = cpu;
 		}
 	}
 
-	return slowest_cpu;
+	return lowest_cpu;
 }
-EXPORT_SYMBOL_GPL(get_slowest_cpu);
+EXPORT_SYMBOL_GPL(get_lowest_load_cpu);
 
 static void __ref cpu_up_work(struct work_struct *work)
 {
@@ -188,7 +189,7 @@ EXPORT_SYMBOL_GPL(cpu_up_work);
 
 static void cpu_down_work(struct work_struct *work)
 {
-	int cpu, slowest_cpu;
+	int cpu, lowest_cpu;
 	unsigned int target;
 
 	target = hotplug.target_cpus;
@@ -196,9 +197,9 @@ static void cpu_down_work(struct work_struct *work)
 	for_each_online_cpu(cpu) {
 		if (cpu == 0)
 			continue;
-		slowest_cpu = get_slowest_cpu();
-		if (slowest_cpu)
-			cpu_down(slowest_cpu);
+		lowest_cpu = get_lowest_load_cpu();
+		if (lowest_cpu)
+			cpu_down(lowest_cpu);
 		if (target == num_online_cpus())
 			break;
 	}
@@ -650,7 +651,7 @@ static int __devinit msm_hotplug_probe(struct platform_device *pdev)
 	if (!st->load_hist) {
 		pr_err("%s: Failed to allocated memory\n", MSM_HOTPLUG);
 		ret = -ENOMEM;
-		goto err_out;
+		goto err_dev;
 	}
 
 	setup_timer(&hp->lock_timer, handle_lock_timer, 0);
