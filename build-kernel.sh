@@ -19,7 +19,7 @@ export USE_CCACHE=1
 
 # Target gcc version
 #export TARGET_GCC=4.8;
-export TARGET_GCC=4.9;
+export TARGET_GCC=4.10;
 
 #the following lines one have some effect if you use 4.8 as TARGET_GCC
 #if you want to use cfx, uncomment next line
@@ -39,25 +39,8 @@ export TARGET_GCC_SUB=UBER;
 
 
 
-if [ $TARGET_GCC == "4.8" ];
-then
-    if [ -z "$TARGET_GCC_SUB" ];
-    then
-        export TARGET_GCC_SUB=google;
-    fi;
-    export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
-else  
-	if [ $TARGET_GCC == "4.9" ];
-	then
-		if [ -z "$TARGET_GCC_SUB" ];
-		then
-			export TARGET_GCC_SUB=google;
-		fi;
-		export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
-	else  
-		export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC;
-	fi;
-fi;
+export ARM_EABI_TOOLCHAIN=../../../prebuilts/gcc/linux-x86/arm/arm-eabi-$TARGET_GCC/$TARGET_GCC_SUB;
+
 #export PATH=$ARM_EABI_TOOLCHAIN/arm-eabi/bin:$ARM_EABI_TOOLCHAIN/bin:$PATH;
 
  echo 'Kernel buid with ' $ARM_EABI_TOOLCHAIN;
